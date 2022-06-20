@@ -20,3 +20,15 @@ EX : uvicorn main:app --reload
 
 # To Check the Response
 Open your browser to http://127.0.0.1:8000
+
+# Imp Topics:
+# Query Parameters
+In FastAPI, when we declare a function with parameters that are not present as path parameters, they are interpreted as query parameters. <br>
+Best practice for RESTful API design is that path params are used to identify a specific resource or resources, while query parameters are used to sort/filter those resources.
+
+EX: <br>
+@app.get("/users/{user_id}/items/{item_id}")<br>
+async def read_user_item(user_id: int, item_id: str, short: bool = False):
+    return something <br>
+   
+Here, user_id and item_id are path parameters. short is a query parameter.
