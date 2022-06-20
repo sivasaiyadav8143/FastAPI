@@ -28,7 +28,7 @@ Best practice for RESTful API design is that path params are used to identify a 
 
 EX: <br>
 @app.get("/users/{user_id}/items/{item_id}")<br>
-async def read_user_item(user_id: int, item_id: str, short: bool = False):
+async def read_user_item(user_id: int, item_id: str, short: bool = False):<br>
     return something <br>
    
 Here, user_id and item_id are path parameters. short is a query parameter.
