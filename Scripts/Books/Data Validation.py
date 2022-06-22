@@ -1,40 +1,29 @@
 from typing import Optional
+
 from fastapi import FastAPI
+from pydantic import BaseModel, Field
+from uuid import UUID
 
 app = FastAPI()
 
-BOOKS = {
-    'book_1': {'title': 'Title One', 'author': 'Author one'},
-    'book_2': {'title': 'Title Two', 'author': 'Author two'},
-    'book_3': {'title': 'Title Three', 'author': 'Author three'},
-    'book_4': {'title': 'Title Four', 'author': 'Author four'},
-    'book_5': {'title': 'Title Five', 'author': 'Author five'},
 
-}
+class Book(BaseModel):
+    id: UUID
+    title: str = Field(min_length=1)
+    author: str = Field(min_length=1, max_length=100)
+    description: Optional[str] = Field(min_length=1, max_length=100, title='Apple')
+    rating: int = Field(gt=-1, lt=101)
 
-@app.get("/")
-def read_all_books(skip_book: Optional[str]= None):
-    if skip_book:
-        new_book = BOOKS.copy()
-        del new_book[skip_book]
-        return new_book
+
+BOOKS = []
+
+
+@app.get('/')
+async def read_all_books():
     return BOOKS
 
+
 @app.post('/')
-async def create_book(book_title,book_author):
-    book_max_num = 0
-    for key in BOOKS:
-        book_num = int(key.split('_')[-1])
-        if book_num > book_max_num:
-            book_max_num = book_num
-    BOOKS[f'book_{book_max_num + 1}'] = {'title': book_title, 'author': book_author}
-    return BOOKS[f'book_{book_max_num + 1}']
-
-@app.get('/{bookname}')
-async def get_book(bookname: str):
-    return BOOKS[bookname]
-
-@app.delete('/{book_name}')
-async def delete_book(book_name):
-    del BOOKS[book_name]
-    return f'Book {book_name} deleted'
+async def create_book(book: Book):
+    BOOKS.append(book)
+    return book
